@@ -3,24 +3,27 @@ const utils = require("../../../utils");
 
 exports.login = async (req, res, next) => {
   try {
-    const { email } = req.body;
-    const user = await loginService.checkUser(email);
+    const requestEmail = req.body.email;
+    const user = await loginService.checkUser(requestEmail);
 
-    if (user) {
-      const { newAccessToken, newRefreshToken } = utils.makeToken(email);
-
-      loginService.saveToken(email, newRefreshToken);
-      res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
-
+    if (!user) {
       return res.json({
-        user,
-        newAccessToken,
-        isSuccess: true,
+        isSuccess: false,
       });
     }
 
+    const { email, displayName, profile } = user;
+    const { newAccessToken, newRefreshToken } = utils.createToken(email);
+
+    loginService.saveToken(email, newRefreshToken);
+    res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+
     return res.json({
-      isSuccess: false,
+      email,
+      displayName,
+      profile,
+      newAccessToken,
+      isSuccess: true,
     });
   } catch (error) {
     next(error);
@@ -53,7 +56,7 @@ exports.refreshLogin = async (req, res, next) => {
       });
     }
 
-    const { newAccessToken, newRefreshToken } = utils.makeToken(decodedEmail);
+    const { newAccessToken, newRefreshToken } = utils.createToken(decodedEmail);
     loginService.saveToken(decodedEmail, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
