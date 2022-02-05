@@ -33,10 +33,7 @@ const SubGoalSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  todos: {
-    type: [TodosSchema],
-    default: [],
-  },
+  todos: [TodosSchema],
   level: {
     type: Number,
     default: 0,
@@ -53,10 +50,7 @@ const MainGoalSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  subGoals: {
-    type: [SubGoalSchema],
-    default: [],
-  },
+  subGoals: [SubGoalSchema],
   users: {
     type: [Schema.Types.ObjectId],
     ref: "User",
@@ -66,8 +60,8 @@ const MainGoalSchema = new mongoose.Schema({
     ],
   },
   messages: {
-    type: Array, // 수진님 로직 넣기
-    default: [],
+    // 기존 Chat 스키마 이전 필요
+    type: Array,
   },
   level: {
     type: Number,
