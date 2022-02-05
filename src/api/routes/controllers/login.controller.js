@@ -12,7 +12,7 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const { email, nickName, profile } = user;
+    const { email, displayName, profile } = user;
     const { newAccessToken, newRefreshToken } = utils.createToken(email);
 
     loginService.saveToken(email, newRefreshToken);
@@ -20,7 +20,7 @@ exports.login = async (req, res, next) => {
 
     return res.json({
       email,
-      nickName,
+      displayName,
       profile,
       newAccessToken,
       isSuccess: true,

@@ -6,12 +6,13 @@ const UserSchema = new Schema({
   email: {
     type: String,
     unique: true,
+    required: true,
     validate: {
       validator: isEmail,
       message: "이메일 형식이 틀렸습니다.",
     },
   },
-  nickName: String,
+  displayName: String,
   profile: {
     type: String,
     validate: {
