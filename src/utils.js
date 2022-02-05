@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-exports.makeToken = payload => {
+exports.createToken = payload => {
   const newAccessToken = jwt.sign(
     {
       payload,
