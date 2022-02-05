@@ -40,6 +40,22 @@ const SubGoalSchema = new mongoose.Schema({
   },
 });
 
+const MessagesSchema = new mongoose.Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+  },
+});
+
 const MainGoalSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -59,10 +75,7 @@ const MainGoalSchema = new mongoose.Schema({
       "프로젝트 참여 유저는 작성자를 포함하여 최소 1명 이상이어야 합니다.",
     ],
   },
-  messages: {
-    // 기존 Chat 스키마 이전 필요
-    type: Array,
-  },
+  messages: [MessagesSchema],
   level: {
     type: Number,
     default: 0,
