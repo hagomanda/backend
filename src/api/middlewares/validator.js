@@ -6,7 +6,7 @@ const verifyParams = (req, res, next) => {
   if (!mongoose.isValidObjectId(id)) {
     return res.json({
       code: 400,
-      message: "Invalid Goal Id",
+      message: "Invalid Id",
     });
   }
 
