@@ -40,29 +40,31 @@ exports.refreshLogin = async (req, res, next) => {
       });
     }
 
-    const authUser = await utils.authenticateToken(refreshToken);
+    const user = await utils.authenticateToken(refreshToken);
 
-    if (authUser.message) {
+    if (user.message) {
       return res.json({
         isSuccess: false,
       });
     }
 
-    if (refreshToken !== authUser.token) {
+    if (refreshToken !== user.token) {
       return res.json({
         isSuccess: false,
       });
     }
 
-    const { newAccessToken, newRefreshToken } = utils.createToken(
-      authUser.email,
-    );
+    const { newAccessToken, newRefreshToken } = utils.createToken(user.email);
 
-    await authService.saveToken(authUser.email, newRefreshToken);
+    await authService.saveToken(user.email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
+    const { email, displayName, profile } = user;
+
     return res.json({
-      authUser,
+      email,
+      displayName,
+      profile,
       newAccessToken,
       isSuccess: true,
     });

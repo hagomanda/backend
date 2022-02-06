@@ -1,7 +1,7 @@
 const usersService = require("../../services/users.service");
 
 exports.create = async (req, res, next) => {
-  const result = await usersService.signup(req.body);
+  const result = await usersService.signup(req.body.user);
 
   if (result.message) {
     return res.json({

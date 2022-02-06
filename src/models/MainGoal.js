@@ -33,7 +33,10 @@ const SubGoalSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  todos: [TodosSchema],
+  todos: {
+    type: [TodosSchema],
+    default: Array(8).fill(TodosSchema),
+  },
   level: {
     type: Number,
     default: 0,
@@ -66,7 +69,10 @@ const MainGoalSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  subGoals: [SubGoalSchema],
+  subGoals: {
+    type: [SubGoalSchema],
+    default: Array(8).fill(SubGoalSchema),
+  },
   users: {
     type: [Schema.Types.ObjectId],
     ref: "User",
