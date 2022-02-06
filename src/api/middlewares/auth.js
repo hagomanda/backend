@@ -1,4 +1,4 @@
-const utils = require("../../../utils");
+const utils = require("../../utils");
 
 exports.authenticateUser = async (req, res, next) => {
   try {
@@ -10,7 +10,7 @@ exports.authenticateUser = async (req, res, next) => {
       });
     }
 
-    const authResult = utils.authenticateToken(accessToken);
+    const authResult = await utils.authenticateToken(accessToken);
 
     if (authResult.message) {
       return res.json({
@@ -18,9 +18,7 @@ exports.authenticateUser = async (req, res, next) => {
       });
     }
 
-    res.json({
-      isSuccess: true,
-    });
+    next();
   } catch (error) {
     next(error);
   }
