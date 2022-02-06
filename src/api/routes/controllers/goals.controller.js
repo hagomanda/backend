@@ -4,14 +4,18 @@ exports.getOne = async (req, res, next) => {
   const { id } = req.params;
   const result = await goalsService.getDetail(id);
 
-  if (!result || result.error) {
+  if (!result) {
     return res.json({
       result: "error",
       error: {
-        message: "Invalid Goal Id",
-        code: 400,
+        message: "Not Found",
+        code: 404,
       },
     });
+  }
+
+  if (result.error) {
+    return next(result.error);
   }
 
   const { title, subGoals, level, users, messages } = result;

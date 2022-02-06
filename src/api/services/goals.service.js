@@ -2,7 +2,7 @@ const MainGoal = require("../../models/MainGoal");
 
 exports.getDetail = async id => {
   try {
-    const result = await MainGoal.findById(id);
+    const result = await MainGoal.findById(id).lean();
     return result;
   } catch (error) {
     return {
