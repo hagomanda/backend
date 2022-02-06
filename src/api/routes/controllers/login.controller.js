@@ -1,10 +1,10 @@
-const loginService = require("../../services/login.service");
+const authService = require("../../services/auth.service");
 const utils = require("../../../utils");
 
 exports.login = async (req, res, next) => {
   try {
     const requestEmail = req.body.email;
-    const user = await loginService.checkUser(requestEmail);
+    const user = await authService.checkUser(requestEmail);
 
     if (!user) {
       return res.json({
@@ -15,7 +15,7 @@ exports.login = async (req, res, next) => {
     const { email, displayName, profile } = user;
     const { newAccessToken, newRefreshToken } = utils.createToken(email);
 
-    loginService.saveToken(email, newRefreshToken);
+    authService.saveToken(email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
     return res.json({
@@ -40,28 +40,29 @@ exports.refreshLogin = async (req, res, next) => {
       });
     }
 
-    const decodedEmail = utils.authenticateToken(refreshToken)?.payload;
+    const authUser = await utils.authenticateToken(refreshToken);
 
-    if (!decodedEmail) {
+    if (authUser.message) {
       return res.json({
         isSuccess: false,
       });
     }
 
-    const user = await loginService.checkUser(decodedEmail);
-
-    if (refreshToken !== user.token) {
+    if (refreshToken !== authUser.token) {
       return res.json({
         isSuccess: false,
       });
     }
 
-    const { newAccessToken, newRefreshToken } = utils.createToken(decodedEmail);
-    loginService.saveToken(decodedEmail, newRefreshToken);
+    const { newAccessToken, newRefreshToken } = utils.createToken(
+      authUser.email,
+    );
+
+    await authService.saveToken(authUser.email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
     return res.json({
-      user,
+      authUser,
       newAccessToken,
       isSuccess: true,
     });
