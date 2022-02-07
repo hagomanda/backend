@@ -8,3 +8,15 @@ exports.checkUser = async email => {
 exports.saveToken = async (email, token) => {
   await User.findOneAndUpdate({ email }, { token }).exec();
 };
+
+exports.logout = async user => {
+  try {
+    const { _id } = user;
+
+    await User.findByIdAndUpdate(_id, {
+      token: null,
+    }).exec();
+  } catch (error) {
+    return error;
+  }
+};
