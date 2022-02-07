@@ -18,6 +18,8 @@ exports.authenticateUser = async (req, res, next) => {
       });
     }
 
+    req.app.locals.authResult = authResult;
+
     next();
   } catch (error) {
     next(error);

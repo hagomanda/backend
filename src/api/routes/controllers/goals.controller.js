@@ -32,3 +32,19 @@ exports.getOne = async (req, res, next) => {
     },
   });
 };
+
+exports.create = async (req, res, next) => {
+  const result = await goalsService.create(req.app.locals.authResult);
+
+  if (!result) {
+    return next();
+  }
+
+  const mainGoalId = result;
+
+  res.json({
+    result: {
+      mainGoalId,
+    },
+  });
+};

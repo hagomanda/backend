@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const MainGoal = require("../../models/MainGoal");
+const User = require("../../models/User");
 
 exports.getDetail = async id => {
   try {
@@ -13,4 +15,21 @@ exports.getDetail = async id => {
       },
     };
   }
+};
+
+exports.create = async user => {
+  const { _id } = user;
+  const mainGoalId = mongoose.Types.ObjectId();
+
+  await MainGoal.create({
+    _id: mainGoalId,
+    createdBy: _id,
+    users: [_id],
+  });
+
+  await User.findByIdAndUpdate(_id, {
+    $push: { createdGoals: mainGoalId },
+  }).exec();
+
+  return mainGoalId;
 };
