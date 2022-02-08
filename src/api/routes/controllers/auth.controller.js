@@ -1,26 +1,42 @@
-const utils = require("../../../utils");
 const authService = require("../../services/auth.service");
-const router = require("../auth");
+const utils = require("../../../utils");
 
-exports.authenticateUser = async (req, res, next) => {
+exports.logout = async (req, res, next) => {
   try {
-    const accessToken = req.headers.authorization;
+    await authService.logout(req.app.locals.authResult);
 
-    if (!accessToken) {
-      return res.json({
-        isSuccess: false,
-      });
-    }
-
-    const authResult = utils.authenticateToken(accessToken);
-
-    if (authResult.message) {
-      return res.json({
-        isSuccess: false,
-      });
-    }
+    delete req.headers;
 
     res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.login = async (req, res, next) => {
+  try {
+    const requestEmail = req.body.email;
+    const user = await authService.checkUser(requestEmail);
+
+    if (!user) {
+      return res.json({
+        isSuccess: false,
+      });
+    }
+
+    const { email, displayName, profile } = user;
+    const { newAccessToken, newRefreshToken } = utils.createToken(email);
+
+    authService.saveToken(email, newRefreshToken);
+    res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+
+    return res.json({
+      email,
+      displayName,
+      profile,
+      newAccessToken,
       isSuccess: true,
     });
   } catch (error) {
@@ -28,16 +44,45 @@ exports.authenticateUser = async (req, res, next) => {
   }
 };
 
-exports.logout = async (req, res, next) => {
-  const result = await authService.logout(req.app.locals.authResult);
+exports.refreshLogin = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
 
-  if (result?.error) {
-    return next(result.error);
+    if (!refreshToken) {
+      return res.json({
+        isSuccess: false,
+      });
+    }
+
+    const user = await utils.authenticateToken(refreshToken);
+
+    if (user.message) {
+      return res.json({
+        isSuccess: false,
+      });
+    }
+
+    if (refreshToken !== user.token) {
+      return res.json({
+        isSuccess: false,
+      });
+    }
+
+    const { newAccessToken, newRefreshToken } = utils.createToken(user.email);
+
+    await authService.saveToken(user.email, newRefreshToken);
+    res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+
+    const { email, displayName, profile } = user;
+
+    return res.json({
+      email,
+      displayName,
+      profile,
+      newAccessToken,
+      isSuccess: true,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  delete req.headers;
-
-  res.json({
-    result: "ok",
-  });
 };

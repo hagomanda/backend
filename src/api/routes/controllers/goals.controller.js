@@ -1,50 +1,71 @@
 const goalsService = require("../../services/goals.service");
 
 exports.getOne = async (req, res, next) => {
-  const { id } = req.params;
-  const result = await goalsService.getDetail(id);
+  try {
+    const { id } = req.params;
+    const result = await goalsService.getDetail(id);
 
-  if (!result) {
-    return res.json({
-      result: "error",
-      error: {
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
         message: "Not Found",
-        code: 404,
+      });
+    }
+
+    const { title, subGoals, level, users, messages } = result;
+
+    res.json({
+      result: {
+        mainGoal: {
+          title,
+          subGoals,
+          level,
+          users,
+          messages,
+        },
       },
     });
+  } catch (error) {
+    next(error);
   }
-
-  if (result.error) {
-    return next(result.error);
-  }
-
-  const { title, subGoals, level, users, messages } = result;
-
-  res.json({
-    result: {
-      mainGoal: {
-        title,
-        subGoals,
-        level,
-        users,
-        messages,
-      },
-    },
-  });
 };
 
 exports.create = async (req, res, next) => {
-  const result = await goalsService.create(req.app.locals.authResult);
+  try {
+    const result = await goalsService.create(req.app.locals.authResult);
+    const mainGoalId = result;
 
-  if (!result) {
-    return next();
+    res.json({
+      result: {
+        mainGoalId,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
+};
 
-  const mainGoalId = result;
+exports.delete = async (req, res, next) => {
+  try {
+    const goalId = req.params.id;
+    const userId = req.app.locals.authResult["_id"];
+    const result = await goalsService.delete(goalId, userId);
 
-  res.json({
-    result: {
-      mainGoalId,
-    },
-  });
+    if (!result) {
+      return res.json({
+        result: "error",
+        error: {
+          message: "Not Found",
+          code: 404,
+        },
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
 };

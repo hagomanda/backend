@@ -10,13 +10,9 @@ exports.saveToken = async (email, token) => {
 };
 
 exports.logout = async user => {
-  try {
-    const { _id } = user;
+  const { _id } = user;
 
-    await User.findByIdAndUpdate(_id, {
-      token: null,
-    }).exec();
-  } catch (error) {
-    return error;
-  }
+  await User.findByIdAndUpdate(_id, {
+    token: null,
+  }).exec();
 };
