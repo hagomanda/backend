@@ -4,22 +4,14 @@ const MainGoal = require("../../models/MainGoal");
 exports.signup = async userData => {
   const { email, displayName, profile } = userData;
 
-  try {
-    await User.create({
-      email,
-      displayName,
-      profile,
-      createdGoals: [],
-      createdTodoIds: [],
-      token: null,
-    });
-
-    return {
-      result: "ok",
-    };
-  } catch (error) {
-    return error;
-  }
+  await User.create({
+    email,
+    displayName,
+    profile,
+    createdGoals: [],
+    createdTodoIds: [],
+    token: null,
+  });
 };
 
 exports.getGoalsFromIds = async ids => {

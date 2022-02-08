@@ -14,4 +14,11 @@ router.get(
   goalsController.getOne,
 );
 
+router.delete(
+  "/mainGoal/:id",
+  auth.authenticateUser,
+  verifyParams,
+  goalsController.delete,
+);
+
 module.exports = router;
