@@ -17,6 +17,7 @@ exports.authenticateUser = async (req, res, next) => {
         isSuccess: false,
       });
     }
+
     req.app.locals.authResult = authResult;
 
     next();
