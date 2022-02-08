@@ -1,39 +1,30 @@
-const User = require("../../../models/User");
-const Todo = require("../../../models/Todo");
-const { format, add } = require("date-fns");
-const mongoose = require("mongoose");
+const todosService = require("../../services/todos.service");
 
-exports.getUsersTodos = async (req, res, next) => {
-  const currentSunday = new Date(req.headers.currentdate);
-  const todos = {};
+exports.addTodo = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { date, repetition } = req.body;
+    let addResult = null;
 
-  for (let i = 0; i < 8; i++) {
-    const date = format(add(currentSunday, { days: i }), "yyyy-MM-dd");
-    const { createdTodos } = await User.findById(
-      req.app.locals.authResult["_id"],
-      "createdTodos -_id",
-    ).populate("createdTodos");
-    const todosInDate = createdTodos.filter(todo => {
-      return todo.addedInCalender?.has(date);
-    });
-
-    if (todosInDate.length === 0) {
-      continue;
+    if (repetition.isRepeat) {
+      const { type, week } = repetition;
+      addResult = await todosService.repeatTodo(id, date, type, week);
+    } else {
+      addResult = await todosService.addDateToTodo(id, date);
     }
 
-    todos[date] = todosInDate;
+    if (!addResult.isSuccess) {
+      res.status(400);
+      return res.json({
+        result: "false",
+        message: `${addResult.date}에 이미 같은 Todo가 있습니다.`,
+      });
+    }
+
+    return res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
   }
-
-  res.json({
-    result: todos,
-  });
 };
-
-// 추후 사용 예정. (test용)
-// await Todo.findByIdAndUpdate(mongoose.Types.ObjectId("620350260a5bfbc71c12773f"), {
-//   $set: {
-//     addedInCalender : {
-//       "2022-02-09": {},
-//     },
-//   },
-// });
