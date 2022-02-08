@@ -6,7 +6,6 @@ const goalsController = require("./controllers/goals.controller");
 const auth = require("../middlewares/auth");
 
 router.get("/", (req, res, next) => {});
-// verifyToken 필요
 router.post("/mainGoal", auth.authenticateUser, goalsController.create);
 router.get(
   "/mainGoal/:id",
