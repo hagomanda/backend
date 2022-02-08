@@ -1,11 +1,8 @@
 const User = require("../../models/User");
+const MainGoal = require("../../models/MainGoal");
 
 exports.signup = async userData => {
   const { email, displayName, profile } = userData;
-
-  if (!email || !displayName) {
-    return new Error("이메일 또는 별명이 없습니다.");
-  }
 
   try {
     await User.create({
@@ -20,6 +17,24 @@ exports.signup = async userData => {
     return {
       result: "ok",
     };
+  } catch (error) {
+    return error;
+  }
+};
+
+exports.getGoalsFromIds = async ids => {
+  try {
+    const results = await MainGoal.find(
+      {
+        _id: {
+          $in: ids,
+        },
+      },
+      {
+        title: 1,
+      },
+    ).exec();
+    return results;
   } catch (error) {
     return error;
   }
