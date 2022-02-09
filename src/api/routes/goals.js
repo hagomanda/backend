@@ -13,12 +13,17 @@ router.get(
   verifyParams,
   goalsController.getOne,
 );
-
-router.delete(
+router.put(
   "/mainGoal/:id",
   auth.authenticateUser,
   verifyParams,
-  goalsController.delete,
+  goalsController.modifyMainGoal,
+);
+router.put(
+  "/subGoal/:id",
+  auth.authenticateUser,
+  verifyParams,
+  goalsController.modifySubGoal,
 );
 
 module.exports = router;

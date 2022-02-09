@@ -1,3 +1,4 @@
+const User = require("../../../models/User");
 const usersService = require("../../services/users.service");
 
 exports.create = async (req, res, next) => {
@@ -14,7 +15,9 @@ exports.create = async (req, res, next) => {
 
 exports.getGoals = async (req, res, next) => {
   try {
-    const { createdGoals } = req.app.locals.authResult;
+    const userId = req.app.locals.userId;
+    const user = await User.findById(userId);
+    const { createdGoals } = user;
     const result = await usersService.getGoalsFromIds(createdGoals);
 
     res.json({ result });

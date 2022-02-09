@@ -1,11 +1,13 @@
 const authService = require("../../services/auth.service");
 const utils = require("../../../utils");
+const User = require("../../../models/User");
 
 exports.logout = async (req, res, next) => {
   try {
-    await authService.logout(req.app.locals.authResult);
+    await authService.logout(req.app.locals.userId);
 
-    delete req.headers;
+    delete req.headers.authorization;
+    res.clearCookie("refreshToken");
 
     res.json({
       result: "ok",
@@ -18,9 +20,9 @@ exports.logout = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const requestEmail = req.body.email;
-    const user = await authService.checkUser(requestEmail);
+    const userId = await authService.checkUser(requestEmail)._id;
 
-    if (!user) {
+    if (!userId) {
       return res.json({
         isSuccess: false,
       });
@@ -29,7 +31,7 @@ exports.login = async (req, res, next) => {
     const { email, displayName, profile } = user;
     const { newAccessToken, newRefreshToken } = utils.createToken(email);
 
-    authService.saveToken(email, newRefreshToken);
+    await authService.saveToken(email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
     return res.json({
@@ -54,9 +56,11 @@ exports.refreshLogin = async (req, res, next) => {
       });
     }
 
-    const user = await utils.authenticateToken(refreshToken);
+    const decodedEmail = await utils.decodeToken(refreshToken);
+    const userId = await authService.checkUser(decodedEmail);
+    const user = await User.findById(userId);
 
-    if (user.message) {
+    if (decodedEmail.message) {
       return res.json({
         isSuccess: false,
       });
