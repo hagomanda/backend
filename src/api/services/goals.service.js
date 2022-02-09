@@ -32,6 +32,7 @@ exports.create = async userId => {
   await mainGoal.save();
 
   await User.findByIdAndUpdate(userId, {
+
     $push: {
       createdGoals: mainGoalId,
       createdTodos: { $each: todosArray },
