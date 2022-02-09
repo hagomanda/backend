@@ -9,7 +9,7 @@ exports.signup = async userData => {
     displayName,
     profile,
     createdGoals: [],
-    dates: [],
+    createdTodoIds: [],
     token: null,
   });
 };

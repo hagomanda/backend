@@ -20,9 +20,10 @@ exports.create = async user => {
 
   const todosArray = [];
 
-  mainGoal.subGoals.forEach(async subGoal => {
+  mainGoal.subGoals.forEach(subGoal => {
     for (let i = 0; i < 8; i++) {
       const todoId = mongoose.Types.ObjectId();
+
       Todo.create({ _id: todoId });
       subGoal.todos.push(todoId);
       todosArray.push(todoId);

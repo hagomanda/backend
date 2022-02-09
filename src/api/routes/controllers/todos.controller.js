@@ -9,11 +9,11 @@ exports.getUsersTodos = async (req, res, next) => {
 
   for (let i = 0; i < 8; i++) {
     const date = format(add(currentSunday, { days: i }), "yyyy-MM-dd");
-
-    const user = await User.findById(req.app.locals.authResult["_id"]).populate(
-      "createdTodos",
-    );
-    const todosInDate = user.createdTodos.filter(todo => {
+    const { createdTodos } = await User.findById(
+      req.app.locals.authResult["_id"],
+      "createdTodos -_id",
+    ).populate("createdTodos");
+    const todosInDate = createdTodos.filter(todo => {
       return todo.addedInCalender?.has(date);
     });
 
