@@ -4,8 +4,9 @@ const verifyParams = (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
+    res.status(400);
     return res.json({
-      code: 400,
+      result: "error",
       message: "Invalid Id",
     });
   }

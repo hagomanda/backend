@@ -33,8 +33,16 @@ exports.getOne = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const result = await goalsService.create(req.app.locals.authResult);
+    const result = await goalsService.create(req.app.locals.userId);
     const mainGoalId = result;
+
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "Not Found",
+      });
+    }
 
     res.json({
       result: {
@@ -49,16 +57,62 @@ exports.create = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const goalId = req.params.id;
-    const userId = req.app.locals.authResult["_id"];
+    const userId = req.app.locals.userId;
     const result = await goalsService.delete(goalId, userId);
 
     if (!result) {
+      res.status(404);
       return res.json({
         result: "error",
-        error: {
-          message: "Not Found",
-          code: 404,
-        },
+        message: "Not Found",
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.modifyMainGoal = async (req, res, next) => {
+  try {
+    const mainGoalId = req.params.id;
+    const { title } = req.body;
+    const result = await goalsService.modifyMainGoal(mainGoalId, title);
+
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "Not Found",
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.modifySubGoal = async (req, res, next) => {
+  try {
+    const subGoalId = req.params.id;
+    const { mainGoalId, subGoal } = req.body;
+    const result = await goalsService.modifySubGoal(
+      subGoal,
+      subGoalId,
+      mainGoalId,
+    );
+
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "Not Found",
       });
     }
 

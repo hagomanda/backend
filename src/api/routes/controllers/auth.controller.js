@@ -3,9 +3,10 @@ const utils = require("../../../utils");
 
 exports.logout = async (req, res, next) => {
   try {
-    await authService.logout(req.app.locals.authResult);
+    await authService.logout(req.app.locals.userId);
 
-    delete req.headers;
+    delete req.headers.authorization;
+    res.clearCookie("refreshToken");
 
     res.json({
       result: "ok",
@@ -29,10 +30,10 @@ exports.login = async (req, res, next) => {
     const { email, displayName, profile } = user;
     const { newAccessToken, newRefreshToken } = utils.createToken(email);
 
-    authService.saveToken(email, newRefreshToken);
+    await authService.saveToken(email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
-    return res.json({
+    res.json({
       email,
       displayName,
       profile,
@@ -54,9 +55,10 @@ exports.refreshLogin = async (req, res, next) => {
       });
     }
 
-    const user = await utils.authenticateToken(refreshToken);
+    const decodedEmail = await utils.decodeToken(refreshToken);
+    const user = await authService.checkUser(decodedEmail);
 
-    if (user.message) {
+    if (decodedEmail.message) {
       return res.json({
         isSuccess: false,
       });
@@ -75,7 +77,7 @@ exports.refreshLogin = async (req, res, next) => {
 
     const { email, displayName, profile } = user;
 
-    return res.json({
+    res.json({
       email,
       displayName,
       profile,

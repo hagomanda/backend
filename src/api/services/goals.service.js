@@ -8,14 +8,13 @@ exports.getDetail = async id => {
   return result;
 };
 
-exports.create = async user => {
-  const { _id } = user;
+exports.create = async userId => {
   const mainGoalId = mongoose.Types.ObjectId();
 
   const mainGoal = await MainGoal.create({
     _id: mainGoalId,
-    createdBy: _id,
-    users: [_id],
+    createdBy: userId,
+    users: [userId],
   });
 
   const todosArray = [];
@@ -32,7 +31,8 @@ exports.create = async user => {
 
   await mainGoal.save();
 
-  await User.findByIdAndUpdate(_id, {
+  await User.findByIdAndUpdate(userId, {
+
     $push: {
       createdGoals: mainGoalId,
       createdTodos: { $each: todosArray },
@@ -48,4 +48,24 @@ exports.delete = async (goalId, userId) => {
   await User.findByIdAndUpdate(userId, {
     $pull: { createdGoals: goalId },
   }).exec();
+};
+
+exports.modifyMainGoal = async (mainGoalId, title) => {
+  return await MainGoal.findByIdAndUpdate(mainGoalId, {
+    $set: { title },
+  }).exec();
+};
+
+exports.modifySubGoal = async (subGoal, subGoalId, mainGoalId) => {
+  const { title, todos } = subGoal;
+  const mainGoal = await MainGoal.findById(mainGoalId).lean();
+
+  mainGoal.subGoals.forEach(subGoal => {
+    if (subGoalId === String(subGoal._id)) {
+      subGoal.title = title;
+      subGoal.todos = todos;
+    }
+  });
+
+  return await mainGoal.save();
 };

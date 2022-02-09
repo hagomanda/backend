@@ -1,4 +1,3 @@
-const authService = require("./api/services/auth.service");
 const jwt = require("jsonwebtoken");
 
 exports.createToken = payload => {
@@ -21,7 +20,7 @@ exports.createToken = payload => {
   return { newAccessToken, newRefreshToken };
 };
 
-exports.authenticateToken = async token => {
+exports.decodeToken = async token => {
   return jwt.verify(
     token,
     process.env.JWT_SECRET_KEY,
@@ -30,14 +29,7 @@ exports.authenticateToken = async token => {
         return error;
       }
 
-      const decodedEmail = decode.payload;
-      const user = await authService.checkUser(decodedEmail);
-
-      if (!user) {
-        return new Error("No user matched with token.");
-      }
-
-      return user;
+      return decode.payload;
     },
   );
 };
