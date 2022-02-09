@@ -1,5 +1,3 @@
-const MainGoal = require("../../../models/MainGoal");
-const User = require("../../../models/User");
 const goalsService = require("../../services/goals.service");
 
 exports.getOne = async (req, res, next) => {
@@ -39,12 +37,10 @@ exports.create = async (req, res, next) => {
     const mainGoalId = result;
 
     if (!result) {
+      res.status(404);
       return res.json({
         result: "error",
-        error: {
-          message: "Not Found",
-          code: 404,
-        },
+        message: "Not Found",
       });
     }
 
@@ -65,12 +61,10 @@ exports.delete = async (req, res, next) => {
     const result = await goalsService.delete(goalId, userId);
 
     if (!result) {
+      res.status(404);
       return res.json({
         result: "error",
-        error: {
-          message: "Not Found",
-          code: 404,
-        },
+        message: "Not Found",
       });
     }
 
@@ -89,12 +83,10 @@ exports.modifyMainGoal = async (req, res, next) => {
     const result = await goalsService.modifyMainGoal(mainGoalId, title);
 
     if (!result) {
+      res.status(404);
       return res.json({
         result: "error",
-        error: {
-          message: "Not Found",
-          code: 404,
-        },
+        message: "Not Found",
       });
     }
 
@@ -117,12 +109,10 @@ exports.modifySubGoal = async (req, res, next) => {
     );
 
     if (!result) {
+      res.status(404);
       return res.json({
         result: "error",
-        error: {
-          message: "Not Found",
-          code: 404,
-        },
+        message: "Not Found",
       });
     }
 

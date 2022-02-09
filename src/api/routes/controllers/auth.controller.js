@@ -1,6 +1,5 @@
 const authService = require("../../services/auth.service");
 const utils = require("../../../utils");
-const User = require("../../../models/User");
 
 exports.logout = async (req, res, next) => {
   try {
@@ -20,9 +19,9 @@ exports.logout = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const requestEmail = req.body.email;
-    const userId = await authService.checkUser(requestEmail)._id;
+    const user = await authService.checkUser(requestEmail);
 
-    if (!userId) {
+    if (!user) {
       return res.json({
         isSuccess: false,
       });
@@ -34,7 +33,7 @@ exports.login = async (req, res, next) => {
     await authService.saveToken(email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
-    return res.json({
+    res.json({
       email,
       displayName,
       profile,
@@ -57,8 +56,7 @@ exports.refreshLogin = async (req, res, next) => {
     }
 
     const decodedEmail = await utils.decodeToken(refreshToken);
-    const userId = await authService.checkUser(decodedEmail);
-    const user = await User.findById(userId);
+    const user = await authService.checkUser(decodedEmail);
 
     if (decodedEmail.message) {
       return res.json({
@@ -79,7 +77,7 @@ exports.refreshLogin = async (req, res, next) => {
 
     const { email, displayName, profile } = user;
 
-    return res.json({
+    res.json({
       email,
       displayName,
       profile,

@@ -1,4 +1,3 @@
-const authService = require("./api/services/auth.service");
 const jwt = require("jsonwebtoken");
 
 exports.createToken = payload => {

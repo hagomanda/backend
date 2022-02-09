@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const MainGoal = require("../../models/MainGoal");
 const User = require("../../models/User");
+const Todo = require("../../models/Todo");
 
 exports.getDetail = async id => {
   const result = await MainGoal.findById(id).lean();
@@ -10,14 +11,32 @@ exports.getDetail = async id => {
 exports.create = async userId => {
   const mainGoalId = mongoose.Types.ObjectId();
 
-  await MainGoal.create({
+  const mainGoal = await MainGoal.create({
     _id: mainGoalId,
     createdBy: userId,
     users: [userId],
   });
 
+  const todosArray = [];
+
+  mainGoal.subGoals.forEach(subGoal => {
+    for (let i = 0; i < 8; i++) {
+      const todoId = mongoose.Types.ObjectId();
+
+      Todo.create({ _id: todoId });
+      subGoal.todos.push(todoId);
+      todosArray.push(todoId);
+    }
+  });
+
+  await mainGoal.save();
+
   await User.findByIdAndUpdate(userId, {
-    $push: { createdGoals: mainGoalId },
+    $push: {
+      createdGoals: mainGoalId,
+      createdTodos: { $each: todosArray },
+    },
+    $concatArrays: {},
   }).exec();
 
   return mainGoalId;
@@ -38,12 +57,10 @@ exports.modifyMainGoal = async (mainGoalId, title) => {
 
 exports.modifySubGoal = async (subGoal, subGoalId, mainGoalId) => {
   const { title, todos } = subGoal;
-  const mainGoal = await MainGoal.findById(mainGoalId).exec();
+  const mainGoal = await MainGoal.findById(mainGoalId).lean();
 
   mainGoal.subGoals.forEach(subGoal => {
-    const subGoalObjectId = new mongoose.Types.ObjectId(subGoalId);
-
-    if (subGoalObjectId.equals(subGoal._id)) {
+    if (subGoalId === String(subGoal._id)) {
       subGoal.title = title;
       subGoal.todos = todos;
     }

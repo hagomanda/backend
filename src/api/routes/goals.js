@@ -13,6 +13,12 @@ router.get(
   verifyParams,
   goalsController.getOne,
 );
+router.delete(
+  "/mainGoal/:id",
+  auth.authenticateUser,
+  verifyParams,
+  goalsController.delete,
+);
 router.put(
   "/mainGoal/:id",
   auth.authenticateUser,

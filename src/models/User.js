@@ -26,7 +26,7 @@ const UserSchema = new Schema({
       ref: "MainGoal",
     },
   ],
-  createdtodoIds: [
+  createdTodos: [
     {
       type: Schema.Types.ObjectId,
       ref: "Todo",

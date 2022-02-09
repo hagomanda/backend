@@ -1,41 +1,14 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const TodosSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    default: "",
-  },
-  addedInCalender: {
-    type: Map,
-    of: new mongoose.Schema(
-      {
-        isComplete: { type: Boolean, default: false },
-        memo: { type: String, default: "" },
-      },
-      {
-        _id: false,
-      },
-    ),
-  },
-  level: {
-    type: Number,
-    default: 0,
-  },
-  experiencePoint: {
-    type: Number,
-    default: 0,
-  },
-});
-
 const SubGoalSchema = new mongoose.Schema({
   title: {
     type: String,
     default: "",
   },
   todos: {
-    type: [TodosSchema],
-    default: Array.from(Array(8), element => new Object()),
+    type: [Schema.Types.ObjectId],
+    ref: "Todo",
   },
   level: {
     type: Number,

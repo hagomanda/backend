@@ -9,13 +9,14 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx}": [
+    "*.{js,jsx}": [
       "eslint --fix",
       "prettier --write"
     ]
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "date-fns": "^2.28.0",
     "debug": "~2.6.9",
     "dotenv": "^16.0.0",
     "eslint": "^8.8.0",
@@ -32,7 +33,6 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.28.0",
     "husky": "^7.0.0"
   }
 }

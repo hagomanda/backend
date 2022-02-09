@@ -1,4 +1,5 @@
 const utils = require("../../utils");
+const authService = require("../services/auth.service");
 
 exports.authenticateUser = async (req, res, next) => {
   try {
@@ -20,16 +21,15 @@ exports.authenticateUser = async (req, res, next) => {
     }
 
     if (!userId) {
+      res.status(404);
       return res.json({
         result: "error",
-        error: {
-          message: "Not Found",
-          code: 404,
-        },
+        message: "Not Found",
       });
     }
 
     req.app.locals.userId = userId;
+
     next();
   } catch (error) {
     next(error);

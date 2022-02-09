@@ -16,8 +16,7 @@ exports.create = async (req, res, next) => {
 exports.getGoals = async (req, res, next) => {
   try {
     const userId = req.app.locals.userId;
-    const user = await User.findById(userId);
-    const { createdGoals } = user;
+    const createdGoals = await User.findById(userId, "createdGoals -_id");
     const result = await usersService.getGoalsFromIds(createdGoals);
 
     res.json({ result });
