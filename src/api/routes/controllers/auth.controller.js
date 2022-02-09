@@ -3,7 +3,7 @@ const utils = require("../../../utils");
 
 exports.logout = async (req, res, next) => {
   try {
-    await authService.logout(req.app.locals.userId);
+    await authService.logout(req.app.locals.user);
 
     delete req.headers.authorization;
     res.clearCookie("refreshToken");
@@ -54,9 +54,14 @@ exports.refreshLogin = async (req, res, next) => {
         isSuccess: false,
       });
     }
-
     const decodedEmail = await utils.decodeToken(refreshToken);
     const user = await authService.checkUser(decodedEmail);
+
+    if (!user) {
+      return res.json({
+        isSuccess: false,
+      });
+    }
 
     if (decodedEmail.message) {
       return res.json({
@@ -71,7 +76,6 @@ exports.refreshLogin = async (req, res, next) => {
     }
 
     const { newAccessToken, newRefreshToken } = utils.createToken(user.email);
-
     await authService.saveToken(user.email, newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 

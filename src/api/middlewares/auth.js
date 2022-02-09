@@ -12,7 +12,7 @@ exports.authenticateUser = async (req, res, next) => {
     }
 
     const decodedEmail = await utils.decodeToken(accessToken);
-    const userId = await authService.checkUser(decodedEmail)._id;
+    const user = await authService.checkUser(decodedEmail);
 
     if (decodedEmail.message) {
       return res.json({
@@ -20,7 +20,7 @@ exports.authenticateUser = async (req, res, next) => {
       });
     }
 
-    if (!userId) {
+    if (!user) {
       res.status(404);
       return res.json({
         result: "error",
@@ -28,7 +28,7 @@ exports.authenticateUser = async (req, res, next) => {
       });
     }
 
-    req.app.locals.userId = userId;
+    req.app.locals.user = user;
 
     next();
   } catch (error) {
