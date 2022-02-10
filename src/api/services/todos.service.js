@@ -1,4 +1,5 @@
 const { add, format } = require("date-fns");
+
 const Todo = require("../../models/Todo");
 
 exports.addDateToTodo = async (id, date) => {
@@ -25,10 +26,12 @@ exports.repeatTodo = async (id, date, type, week) => {
           "yyyy-MM-dd",
         );
         const result = await exports.addDateToTodo(id, currentDate);
+
         if (!result.isSuccess) {
           return result;
         }
       }
+
       break;
 
     case "EVERY_WEEK":
@@ -38,12 +41,21 @@ exports.repeatTodo = async (id, date, type, week) => {
           "yyyy-MM-dd",
         );
         const result = await exports.addDateToTodo(id, currentDate);
+
         if (!result.isSuccess) {
           return result;
         }
       }
+
       break;
   }
 
   return { isSuccess: true };
+};
+
+exports.saveTodoMemo = async (id, date, memo) => {
+  const todo = await Todo.findById(id);
+
+  todo.addedInCalendar.set(date, { memo });
+  return await todo.save();
 };

@@ -1,6 +1,7 @@
+const { add, format } = require("date-fns");
+
 const User = require("../../models/User");
 const MainGoal = require("../../models/MainGoal");
-const { add, format } = require("date-fns");
 
 exports.signup = async userData => {
   const { email, displayName, profile } = userData;
@@ -43,10 +44,10 @@ exports.getTodosFromIds = async (id, date, days) => {
 
   for (let i = 0; i <= days; i++) {
     const currentDate = format(add(date, { days: i }), "yyyy-MM-dd");
-
     const todosInDate = createdTodos.filter(todo => {
       return todo.addedInCalendar.has(currentDate);
     });
+
     if (todosInDate.length === 0) {
       continue;
     }
