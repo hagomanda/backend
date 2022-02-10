@@ -5,7 +5,7 @@ const TodoSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  addedInCalender: {
+  addedInCalendar: {
     type: Map,
     of: new mongoose.Schema(
       {
@@ -16,6 +16,7 @@ const TodoSchema = new mongoose.Schema({
         _id: false,
       },
     ),
+    default: new Map(),
   },
   level: {
     type: Number,
