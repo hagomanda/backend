@@ -9,8 +9,10 @@ exports.saveToken = async (email, token) => {
   await User.findOneAndUpdate({ email }, { token }).exec();
 };
 
-exports.logout = async userId => {
-  await User.findByIdAndUpdate(userId, {
+exports.logout = async user => {
+  const { _id } = user;
+
+  await User.findByIdAndUpdate(_id, {
     token: null,
   }).exec();
 };

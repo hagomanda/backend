@@ -8,13 +8,14 @@ exports.getDetail = async id => {
   return result;
 };
 
-exports.create = async userId => {
+exports.create = async user => {
   const mainGoalId = mongoose.Types.ObjectId();
+  const { _id } = user;
 
   const mainGoal = await MainGoal.create({
     _id: mainGoalId,
-    createdBy: userId,
-    users: [userId],
+    createdBy: _id,
+    users: [_id],
   });
 
   const todosArray = [];
@@ -31,8 +32,7 @@ exports.create = async userId => {
 
   await mainGoal.save();
 
-  await User.findByIdAndUpdate(userId, {
-
+  await User.findByIdAndUpdate(_id, {
     $push: {
       createdGoals: mainGoalId,
       createdTodos: { $each: todosArray },
