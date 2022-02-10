@@ -4,7 +4,9 @@ const User = require("../../models/User");
 const Todo = require("../../models/Todo");
 
 exports.getDetail = async id => {
-  const result = await MainGoal.findById(id).lean();
+  const result = await MainGoal.findById(id)
+    .lean()
+    .populate("subGoals.todos", "title");
   return result;
 };
 
