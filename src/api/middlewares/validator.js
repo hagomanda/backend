@@ -23,6 +23,8 @@ const repetitoinSchema = Joi.object({
   week: Joi.number().min(1).max(3).required(),
 }).required();
 
+const todoMemoSchema = Joi.string().max(200).required();
+
 exports.verifyParams = verifyParams;
 
 exports.verifyDateRepetitoin = async (req, res, next) => {
@@ -31,6 +33,19 @@ exports.verifyDateRepetitoin = async (req, res, next) => {
 
     await dateValidation.validateAsync(date);
     await repetitoinSchema.validateAsync(repetition);
+    next();
+  } catch (error) {
+    error.status = 400;
+    next(error);
+  }
+};
+
+exports.verifyTodoMemo = async (req, res, next) => {
+  try {
+    const { memo, date } = req.body;
+
+    await dateValidation.validateAsync(date);
+    await todoMemoSchema.validateAsync(memo);
     next();
   } catch (error) {
     error.status = 400;

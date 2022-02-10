@@ -21,7 +21,30 @@ exports.addTodo = async (req, res, next) => {
       });
     }
 
-    return res.json({
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.saveTodoMemo = async (req, res, next) => {
+  const { date, memo } = req.body;
+  const { id } = req.params;
+
+  try {
+    const result = await todosService.saveTodoMemo(id, date, memo);
+
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "Not Found",
+      });
+    }
+
+    res.json({
       result: "ok",
     });
   } catch (error) {

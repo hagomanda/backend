@@ -1,5 +1,5 @@
-const authService = require("../../services/auth.service");
 const utils = require("../../../utils");
+const authService = require("../../services/auth.service");
 
 exports.logout = async (req, res, next) => {
   try {
@@ -54,6 +54,7 @@ exports.refreshLogin = async (req, res, next) => {
         isSuccess: false,
       });
     }
+
     const decodedEmail = await utils.decodeToken(refreshToken);
     const user = await authService.checkUser(decodedEmail);
 
