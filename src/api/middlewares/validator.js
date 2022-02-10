@@ -15,17 +15,18 @@ const verifyParams = (req, res, next) => {
   next();
 };
 
-const dateValidation = Joi.date().required();
-
-const repetitoinSchema = Joi.object({
-  isRepeat: Joi.boolean().required(),
-  type: Joi.string().default("EVERY_DAY").required(),
-  week: Joi.number().min(1).max(3).required(),
-}).required();
-
-const todoMemoSchema = Joi.string().max(200).required();
-
 exports.verifyParams = verifyParams;
+
+const dateValidation = Joi.date().required();
+const repetitoinSchema = Joi.object()
+  .keys({
+    isRepeat: Joi.boolean().required(),
+    type: Joi.string().default("EVERY_DAY").required(),
+    week: Joi.number().min(1).max(3).required(),
+  })
+  .required();
+const todoMemoSchema = Joi.string().max(200).required();
+const emailSchema = Joi.string().email().required();
 
 exports.verifyDateRepetitoin = async (req, res, next) => {
   try {
@@ -46,6 +47,18 @@ exports.verifyTodoMemo = async (req, res, next) => {
 
     await dateValidation.validateAsync(date);
     await todoMemoSchema.validateAsync(memo);
+    next();
+  } catch (error) {
+    error.status = 400;
+    next(error);
+  }
+};
+
+exports.verifyEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    await emailSchema.validateAsync(email);
     next();
   } catch (error) {
     error.status = 400;

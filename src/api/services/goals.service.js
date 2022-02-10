@@ -69,3 +69,11 @@ exports.modifySubGoal = async (subGoal, subGoalId, mainGoalId) => {
 
   return await mainGoal.save();
 };
+
+exports.addUser = async (goalId, email) => {
+  const user = await User.findOne({ email }, "_id").exec();
+
+  return await MainGoal.findByIdAndUpdate(goalId, {
+    $pull: { users: user._id },
+  }).exec();
+};

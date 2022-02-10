@@ -123,3 +123,25 @@ exports.modifySubGoal = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.addUser = async (req, res, next) => {
+  try {
+    const goalId = req.params.id;
+    const email = req.body.email;
+    const result = await goalsService.addUser(goalId, email);
+
+    if (!result) {
+      res.status(400);
+      return res.json({
+        result: "error",
+        message: "Failed to add user",
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
