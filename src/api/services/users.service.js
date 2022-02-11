@@ -38,7 +38,7 @@ exports.getTodosFromIds = async (id, date, days) => {
   const todos = {};
 
   const { createdTodos } = await User.findById(
-    id,
+    "6205d6229f17beadd1cdec65",
     "createdTodos -_id",
   ).populate("createdTodos");
 
@@ -54,6 +54,6 @@ exports.getTodosFromIds = async (id, date, days) => {
 
     todos[currentDate] = todosInDate;
   }
-
+  console.log(todos);
   return todos;
 };

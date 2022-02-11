@@ -72,29 +72,36 @@ exports.modifySubGoal = async (subGoal, subGoalId, mainGoalId) => {
   return await mainGoal.save();
 };
 
-exports.addUser = async (goalId, email) => {
-  const user = await User.findOne({ email }, "_id");
+exports.share = async (goalId, email) => {
+  const user = await User.findOne({ email });
   const mainGoal = await MainGoal.findById(goalId);
-
-  if (!mainGoal) {
-    return {
-      isValidId: false,
-    };
-  }
+  const isShareUser = mainGoal.users.includes(user._id);
 
   if (!user) {
     return {
-      isValidUser: false,
+      isSuccess: false,
+      type: "INVAILD_USER",
     };
   }
 
-  if (mainGoal.users.includes(user._id)) {
+  if (!mainGoal) {
     return {
       isSuccess: false,
+      type: "INVAILD_GOAL",
     };
   }
 
+  if (isShareUser) {
+    return {
+      isSuccess: false,
+      type: "DUPLICATE_USER",
+    };
+  }
+
+  user.createdGoals.push(mainGoal._id);
   mainGoal.users.push(user._id);
+  await user.save();
   await mainGoal.save();
+
   return { isSuccess: true };
 };

@@ -1,4 +1,4 @@
-const utils = require("../../utils");
+const utils = require("../../utils/utils");
 const authService = require("../services/auth.service");
 
 exports.authenticateUser = async (req, res, next) => {
