@@ -5,7 +5,7 @@ const auth = require("../middlewares/auth");
 const todosController = require("./controllers/todos.controller");
 const {
   verifyParams,
-  verifyDaterepetition,
+  verifyDateRepetition,
   verifyTodoMemo,
 } = require("../middlewares/validator");
 
