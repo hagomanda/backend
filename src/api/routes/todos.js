@@ -5,7 +5,7 @@ const auth = require("../middlewares/auth");
 const todosController = require("./controllers/todos.controller");
 const {
   verifyParams,
-  verifyDaterepetition,
+  verifyDateRepetitoin,
   verifyTodoMemo,
 } = require("../middlewares/validator");
 
@@ -13,7 +13,7 @@ router.post(
   "/:id",
   // auth.authenticateUser,
   verifyParams,
-  verifyDaterepetition,
+  verifyDateRepetitoin,
   todosController.addTodo,
 );
 

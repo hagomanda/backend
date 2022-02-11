@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { verifyParams, verifyEmail } = require("../middlewares/validator");
+const { verifyParams } = require("../middlewares/validator");
 const goalsController = require("./controllers/goals.controller");
 const auth = require("../middlewares/auth");
 
@@ -24,13 +24,6 @@ router.put(
   auth.authenticateUser,
   verifyParams,
   goalsController.modifyMainGoal,
-);
-router.post(
-  "/mainGoal/:id/users",
-  auth.authenticateUser,
-  verifyParams,
-  verifyEmail,
-  goalsController.addUser,
 );
 router.put(
   "/subGoal/:id",
