@@ -28,7 +28,7 @@ const emailSchema = Joi.string()
   .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
   .required();
 
-exports.verifyDaterepetition = async (req, res, next) => {
+exports.verifyDateRepetition = async (req, res, next) => {
   try {
     const { date, repetition } = req.body;
 
