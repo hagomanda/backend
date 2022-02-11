@@ -123,3 +123,41 @@ exports.modifySubGoal = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.addUser = async (req, res, next) => {
+  try {
+    const goalId = req.params.id;
+    const { email } = req.body;
+    const result = await goalsService.addUser(goalId, email);
+
+    if (!result.isValidUser) {
+      res.status(404);
+      return res.json({
+        result: "false",
+        message: "User not found",
+      });
+    }
+
+    if (!result.isValidId) {
+      res.status(404);
+      return res.json({
+        result: "false",
+        message: "Goal not found",
+      });
+    }
+
+    if (!result.isSuccess) {
+      res.status(400);
+      return res.json({
+        result: "false",
+        message: "유저가 이미 존재합니다.",
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
