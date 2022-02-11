@@ -13,7 +13,7 @@ router.post(
   "/:id",
   // auth.authenticateUser,
   verifyParams,
-  verifyDaterepetition,
+  verifyDateRepetition,
   todosController.addTodo,
 );
 
