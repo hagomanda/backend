@@ -33,7 +33,7 @@ exports.getOne = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const result = await goalsService.create(req.app.locals.user);
+    const result = await goalsService.create(res.locals.user);
     const mainGoalId = result;
 
     if (!result) {
@@ -57,7 +57,7 @@ exports.create = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const goalId = req.params.id;
-    const userId = req.app.locals.userId;
+    const userId = res.locals.userId;
     const result = await goalsService.delete(goalId, userId);
 
     if (!result) {
