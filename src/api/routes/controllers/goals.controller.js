@@ -124,39 +124,40 @@ exports.modifySubGoal = async (req, res, next) => {
   }
 };
 
-exports.addUser = async (req, res, next) => {
+exports.share = async (req, res, next) => {
   try {
     const goalId = req.params.id;
     const { email } = req.body;
-    const result = await goalsService.addUser(goalId, email);
+    const result = await goalsService.share(goalId, email);
 
-    if (!result.isValidUser) {
-      res.status(404);
+    if (result.isSuccess) {
       return res.json({
-        result: "false",
-        message: "User not found",
+        result: "ok",
       });
     }
 
-    if (!result.isValidId) {
-      res.status(404);
-      return res.json({
-        result: "false",
-        message: "Goal not found",
-      });
-    }
+    switch (result.type) {
+      case "INVAILD_USER":
+        res.status(404);
+        return res.json({
+          result: "false",
+          message: "Invalid user",
+        });
 
-    if (!result.isSuccess) {
-      res.status(400);
-      return res.json({
-        result: "false",
-        message: "유저가 이미 존재합니다.",
-      });
-    }
+      case "INVAILD_GOAL":
+        res.status(404);
+        return res.json({
+          result: "false",
+          message: "Invaild Goal",
+        });
 
-    res.json({
-      result: "ok",
-    });
+      case "DUPLICATE_USER":
+        res.status(400);
+        return res.json({
+          result: "false",
+          message: "You are already shared with the project",
+        });
+    }
   } catch (error) {
     next(error);
   }
