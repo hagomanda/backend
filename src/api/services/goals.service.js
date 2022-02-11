@@ -71,9 +71,28 @@ exports.modifySubGoal = async (subGoal, subGoalId, mainGoalId) => {
 };
 
 exports.addUser = async (goalId, email) => {
-  const user = await User.findOne({ email }, "_id").exec();
+  const user = await User.findOne({ email }, "_id");
+  const mainGoal = await MainGoal.findById(goalId);
 
-  return await MainGoal.findByIdAndUpdate(goalId, {
-    $pull: { users: user._id },
-  }).exec();
+  if (!mainGoal) {
+    return {
+      isValidId: false,
+    };
+  }
+
+  if (!user) {
+    return {
+      isValidUser: false,
+    };
+  }
+
+  if (mainGoal.users.includes(user._id)) {
+    return {
+      isSuccess: false,
+    };
+  }
+
+  mainGoal.users.push(user._id);
+  await mainGoal.save();
+  return { isSuccess: true };
 };

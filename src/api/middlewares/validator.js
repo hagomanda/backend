@@ -18,7 +18,7 @@ const verifyParams = (req, res, next) => {
 exports.verifyParams = verifyParams;
 
 const dateValidation = Joi.date().required();
-const repetitoinSchema = Joi.object()
+const repetitionSchema = Joi.object()
   .keys({
     isRepeat: Joi.boolean().required(),
     type: Joi.string().default("EVERY_DAY").required(),
@@ -26,14 +26,16 @@ const repetitoinSchema = Joi.object()
   })
   .required();
 const todoMemoSchema = Joi.string().max(200).required();
-const emailSchema = Joi.string().email().required();
+const emailSchema = Joi.string()
+  .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+  .required();
 
-exports.verifyDateRepetitoin = async (req, res, next) => {
+exports.verifyDaterepetition = async (req, res, next) => {
   try {
     const { date, repetition } = req.body;
 
     await dateValidation.validateAsync(date);
-    await repetitoinSchema.validateAsync(repetition);
+    await repetitionSchema.validateAsync(repetition);
     next();
   } catch (error) {
     error.status = 400;
