@@ -28,7 +28,7 @@ exports.authenticateUser = async (req, res, next) => {
       });
     }
 
-    req.app.locals.user = user;
+    res.locals.user = user;
 
     next();
   } catch (error) {
