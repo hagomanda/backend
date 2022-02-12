@@ -36,13 +36,11 @@ exports.getGoalsFromIds = async ids => {
 
 exports.getTodosFromIds = async (id, date, days) => {
   const todos = {};
+  const { createdTodos } = await User.findById(id, "createdTodos -_id")
+    .populate("createdTodos")
+    .exec();
 
-  const { createdTodos } = await User.findById(
-    "6205d6229f17beadd1cdec65",
-    "createdTodos -_id",
-  ).populate("createdTodos");
-
-  for (let i = 0; i <= days; i++) {
+  for (let i = 0; i < days; i++) {
     const currentDate = format(add(date, { days: i }), "yyyy-MM-dd");
     const todosInDate = createdTodos.filter(todo => {
       return todo.addedInCalendar.has(currentDate);
@@ -51,9 +49,28 @@ exports.getTodosFromIds = async (id, date, days) => {
     if (todosInDate.length === 0) {
       continue;
     }
+    const revisedTodosInDate = todosInDate.map(todo => {
+      const { _id, title, addedInCalendar } = todo;
+      const { isComplete, memo } = addedInCalendar.get(currentDate);
+      return {
+        _id,
+        title,
+        isComplete,
+        memo,
+      };
+    });
 
-    todos[currentDate] = todosInDate;
+    todos[currentDate] = revisedTodosInDate;
   }
   console.log(todos);
   return todos;
+};
+
+exports.findUser = async req => {
+  const user = await User.findOne({ email: req }).lean();
+  if (!user) {
+    return false;
+  }
+  const { email, displayName, profile } = user;
+  return { email, displayName, profile };
 };

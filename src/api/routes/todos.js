@@ -11,7 +11,7 @@ const {
 
 router.post(
   "/:id",
-  // auth.authenticateUser,
+  auth.authenticateUser,
   verifyParams,
   verifyDateRepetition,
   todosController.addTodo,
@@ -23,6 +23,13 @@ router.post(
   verifyParams,
   verifyTodoMemo,
   todosController.saveTodoMemo,
+);
+
+router.delete(
+  "/:id",
+  auth.authenticateUser,
+  verifyParams,
+  todosController.deleteTodo,
 );
 
 module.exports = router;

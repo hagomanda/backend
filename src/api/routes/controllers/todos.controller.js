@@ -7,10 +7,15 @@ exports.addTodo = async (req, res, next) => {
     let addResult = null;
 
     if (repetition.isRepeat) {
-      const { type, week } = repetition;
-      addResult = await todosService.repeatTodo(id, date, type, week);
+      const { type, duration } = repetition;
+      addResult = await todosService.repeatTodo(
+        id,
+        new Date(date),
+        type,
+        duration,
+      );
     } else {
-      addResult = await todosService.addDateToTodo(id, date);
+      addResult = await todosService.addDateToTodo(id, new Date(date));
     }
 
     if (!addResult.isSuccess) {
@@ -47,6 +52,17 @@ exports.saveTodoMemo = async (req, res, next) => {
     res.json({
       result: "ok",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteTodo = async (req, res, next) => {
+  try {
+    const todoId = req.params.id;
+    const date = req.body.date;
+
+    await todosService.deleteTodo(todoId, new Date(date));
   } catch (error) {
     next(error);
   }

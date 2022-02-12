@@ -3,7 +3,7 @@ const authService = require("../../services/auth.service");
 
 exports.logout = async (req, res, next) => {
   try {
-    await authService.logout(req.app.locals.user);
+    await authService.logout(res.locals.user);
 
     delete req.headers.authorization;
     res.clearCookie("refreshToken");

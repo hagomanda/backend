@@ -15,7 +15,7 @@ exports.create = async (req, res, next) => {
 
 exports.getGoals = async (req, res, next) => {
   try {
-    const user = req.app.locals.user;
+    const user = res.locals.user;
     const { _id } = user;
     const { createdGoals } = await User.findById(_id, "createdGoals -_id");
     const result = await usersService.getGoalsFromIds(createdGoals);
@@ -30,7 +30,7 @@ exports.getTodos = async (req, res, next) => {
   try {
     const requestDate = new Date(req.headers.currentdate);
     const days = req.headers.days;
-    const user = req.app.locals.user;
+    const user = res.locals.user;
     const { _id } = user;
     const todos = await usersService.getTodosFromIds(_id, requestDate, days);
 
@@ -38,7 +38,27 @@ exports.getTodos = async (req, res, next) => {
       result: todos,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+exports.findUserByEmail = async (req, res, next) => {
+  try {
+    const user = await usersService.findUser(req.headers.otheruser);
+
+    if (!user) {
+      res.status(400);
+      return res.json({
+        result: "false",
+        message: "해당하는 유저가 없습니다.",
+      });
+    }
+
+    res.json({
+      result: "ok",
+      user,
+    });
+  } catch (error) {
     next(error);
   }
 };
