@@ -30,7 +30,7 @@ router.post(
   auth.authenticateUser,
   verifyParams,
   verifyEmail,
-  goalsController.share,
+  goalsController.addUser,
 );
 router.put(
   "/subGoal/:id",

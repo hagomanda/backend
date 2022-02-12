@@ -1,8 +1,3 @@
-const {
-  INVAILD_USER,
-  INVAILD_GOAL,
-  DUPLICATE_USER,
-} = require("../../../utils/constants");
 const goalsService = require("../../services/goals.service");
 
 exports.getOne = async (req, res, next) => {
@@ -129,40 +124,39 @@ exports.modifySubGoal = async (req, res, next) => {
   }
 };
 
-exports.share = async (req, res, next) => {
+exports.addUser = async (req, res, next) => {
   try {
     const goalId = req.params.id;
     const { email } = req.body;
-    const result = await goalsService.share(goalId, email);
+    const result = await goalsService.addUser(goalId, email);
 
-    if (result.isSuccess) {
+    if (!result.isValidUser) {
+      res.status(404);
       return res.json({
-        result: "ok",
+        result: "false",
+        message: "User not found",
       });
     }
 
-    switch (result.type) {
-      case "INVAILD_USER":
-        res.status(404);
-        return res.json({
-          result: "false",
-          message: INVAILD_USER,
-        });
-
-      case "INVAILD_GOAL":
-        res.status(404);
-        return res.json({
-          result: "false",
-          message: INVAILD_GOAL,
-        });
-
-      case "DUPLICATE_USER":
-        res.status(400);
-        return res.json({
-          result: "false",
-          message: DUPLICATE_USER,
-        });
+    if (!result.isValidId) {
+      res.status(404);
+      return res.json({
+        result: "false",
+        message: "Goal not found",
+      });
     }
+
+    if (!result.isSuccess) {
+      res.status(400);
+      return res.json({
+        result: "false",
+        message: "유저가 이미 존재합니다.",
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
   } catch (error) {
     next(error);
   }

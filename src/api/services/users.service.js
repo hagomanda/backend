@@ -36,6 +36,7 @@ exports.getGoalsFromIds = async ids => {
 
 exports.getTodosFromIds = async (id, date, days) => {
   const todos = {};
+
   const { createdTodos } = await User.findById(id, "createdTodos -_id")
     .populate("createdTodos")
     .exec();
@@ -62,7 +63,7 @@ exports.getTodosFromIds = async (id, date, days) => {
 
     todos[currentDate] = revisedTodosInDate;
   }
-  console.log(todos);
+
   return todos;
 };
 
