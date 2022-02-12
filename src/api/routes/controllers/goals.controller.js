@@ -6,6 +6,7 @@ const {
 const goalsService = require("../../services/goals.service");
 
 exports.getOne = async (req, res, next) => {
+  req.app.io.emit("foo", "foo보낸다!");
   try {
     const { id } = req.params;
     const result = await goalsService.getDetail(id);
@@ -101,8 +102,18 @@ exports.modifyMainGoal = async (req, res, next) => {
       });
     }
 
+    const { _id, subGoals, level, users, messages } = result;
+
     res.json({
       result: "ok",
+      data: {
+        _id,
+        title,
+        subGoals,
+        level,
+        users,
+        messages,
+      },
     });
   } catch (error) {
     next(error);
@@ -112,12 +123,14 @@ exports.modifyMainGoal = async (req, res, next) => {
 exports.modifySubGoal = async (req, res, next) => {
   try {
     const subGoalId = req.params.id;
-    const { mainGoalId, subGoal } = req.body;
+    const { mainGoalId, title: modifiedTitle } = req.body;
     const result = await goalsService.modifySubGoal(
-      subGoal,
-      subGoalId,
+      modifiedTitle,
       mainGoalId,
+      subGoalId,
     );
+
+    const { _id, subGoals, level, users, messages, title } = result;
 
     if (!result) {
       res.status(404);
@@ -129,6 +142,14 @@ exports.modifySubGoal = async (req, res, next) => {
 
     res.json({
       result: "ok",
+      data: {
+        _id,
+        title,
+        subGoals,
+        level,
+        users,
+        messages,
+      },
     });
   } catch (error) {
     next(error);

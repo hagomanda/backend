@@ -3,32 +3,35 @@ const router = express.Router();
 
 const auth = require("../middlewares/auth");
 const todosController = require("./controllers/todos.controller");
-const {
-  verifyParams,
-  verifyDateRepetition,
-  verifyTodoMemo,
-} = require("../middlewares/validator");
+const validator = require("../middlewares/validator");
 
 router.post(
   "/:id",
   auth.authenticateUser,
-  verifyParams,
-  verifyDateRepetition,
+  validator.verifyParams,
+  validator.verifyDateRepetition,
   todosController.addTodo,
+);
+
+router.put(
+  "/:id",
+  auth.authenticateUser,
+  validator.verifyParams,
+  todosController.modifyTodo,
 );
 
 router.post(
   "/memo/:id",
   // auth.authenticateUser,
-  verifyParams,
-  verifyTodoMemo,
+  validator.verifyParams,
+  validator.verifyTodoMemo,
   todosController.saveTodoMemo,
 );
 
 router.delete(
   "/:id",
   auth.authenticateUser,
-  verifyParams,
+  validator.verifyParams,
   todosController.deleteTodo,
 );
 
