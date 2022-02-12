@@ -45,11 +45,46 @@ exports.create = async user => {
   return mainGoalId;
 };
 
+exports.getSharedUsers = async goalId => {
+  const res = await MainGoal.findById(goalId, "createdBy users").lean();
+  return res;
+};
+
 exports.delete = async (goalId, userId) => {
   await MainGoal.findByIdAndDelete(goalId).exec();
   await User.findByIdAndUpdate(userId, {
     $pull: { createdGoals: goalId },
   }).exec();
+};
+
+exports.deleteShared = async (goalId, userId) => {
+  await MainGoal.findByIdAndUpdate(goalId, {
+    $pull: { users: userId },
+  }).exec();
+
+  await User.findByIdAndUpdate(userId, {
+    $pull: { createdGoals: goalId },
+  }).exec();
+};
+
+exports.deleteAll = async (goalId, users) => {
+  const { subGoals } = await MainGoal.findById(goalId, "subGoals.todos");
+
+  const todos = [];
+  subGoals.forEach(subGoal => {
+    todos.push(...subGoal.todos);
+  });
+
+  await Todo.deleteMany({ _id: { $in: todos } }).exec();
+  await User.updateMany(
+    {
+      _id: { $in: users },
+    },
+    {
+      $pull: { createdGoals: goalId },
+    },
+  ).exec();
+  await MainGoal.findByIdAndDelete(goalId).exec();
 };
 
 exports.modifyMainGoal = async (mainGoalId, title) => {

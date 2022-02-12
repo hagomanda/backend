@@ -62,8 +62,8 @@ exports.create = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const goalId = req.params.id;
-    const userId = res.locals.userId;
-    const result = await goalsService.delete(goalId, userId);
+    const { _id: userId } = res.locals.user;
+    const result = await goalsService.getSharedUsers(goalId);
 
     if (!result) {
       res.status(404);
@@ -71,6 +71,12 @@ exports.delete = async (req, res, next) => {
         result: "error",
         message: "Not Found",
       });
+    }
+
+    if (userId.toString() === result.createdBy.toString()) {
+      await goalsService.deleteAll(goalId, result.users);
+    } else {
+      await goalsService.deleteShared(goalId, userId);
     }
 
     res.json({
