@@ -21,7 +21,7 @@ const repetitionSchema = Joi.object()
   .keys({
     isRepeat: Joi.boolean().required(),
     type: Joi.string().default("EVERY_DAY").required(),
-    week: Joi.number().min(1).max(3).required(),
+    duration: Joi.number().min(1).max(3).required(),
   })
   .required();
 const todoMemoSchema = Joi.string().max(200).required();
