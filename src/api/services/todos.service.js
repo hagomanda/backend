@@ -55,10 +55,24 @@ exports.saveTodoMemo = async (id, date, memo) => {
   return await todo.save();
 };
 
-exports.deleteTodo = async (todoId, dateObject) => {
+exports.deleteCalendarTodo = async (todoId, dateObject) => {
   const todo = await Todo.findById(todoId);
 
   const date = format(dateObject, "yyyy-MM-dd");
   todo.addedInCalendar.delete(date);
   await todo.save();
+};
+
+exports.modifyTodoCheckButton = async (id, isComplete, date) => {
+  const todo = await Todo.findById(id).exec();
+
+  if (!todo || !todo.addedInCalendar.has(date)) {
+    return {
+      isSuccess: false,
+    };
+  }
+
+  todo.addedInCalendar.get(date).isComplete = isComplete;
+  await todo.save();
+  return { isSuccess: true };
 };

@@ -32,7 +32,7 @@ exports.getTodos = async (req, res, next) => {
     const days = req.headers.days;
     const user = res.locals.user;
     const { _id } = user;
-    const todos = await usersService.getTodosFromIds(_id, requestDate, days);
+    const todos = await usersService.getTodosFromId(_id, requestDate, days);
 
     res.json({
       result: todos,
@@ -44,7 +44,7 @@ exports.getTodos = async (req, res, next) => {
 
 exports.findUserByEmail = async (req, res, next) => {
   try {
-    const user = await usersService.findUser(req.headers.otheruser);
+    const user = await usersService.findUserByEmail(req.headers.otheruser);
 
     if (!user) {
       res.status(400);

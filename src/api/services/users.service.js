@@ -34,10 +34,10 @@ exports.getGoalsFromIds = async ids => {
   }
 };
 
-exports.getTodosFromIds = async (id, date, days) => {
+exports.getTodosFromId = async (id, date, days) => {
   const todos = {};
   const { createdTodos } = await User.findById(
-    id,
+    "6205d6229f17beadd1cdec65",
     "createdTodos -_id",
   ).populate("createdTodos");
 
@@ -67,11 +67,13 @@ exports.getTodosFromIds = async (id, date, days) => {
   return todos;
 };
 
-exports.findUser = async req => {
-  const user = await User.findOne({ email: req }).lean();
+exports.findUserByEmail = async userEmail => {
+  const user = await User.findOne({ userEmail }).lean();
+
   if (!user) {
     return false;
   }
+
   const { email, displayName, profile } = user;
   return { email, displayName, profile };
 };
