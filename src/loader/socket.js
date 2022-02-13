@@ -9,7 +9,7 @@ function startSocket(app) {
     });
 
     socket.on("disconnect", () => {
-      console.log("user discsonnected");
+      console.log("user disconnected");
     });
   });
 }
