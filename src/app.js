@@ -2,29 +2,13 @@ require("dotenv").config();
 
 const createError = require("http-errors");
 const express = require("express");
-const path = require("path");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
 
+const initialLoader = require("./loader");
 const api = require("./api");
-
-mongoose.connect(process.env.DB_HOST, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", console.log.bind(console, "Connected to database.."));
 
 const app = express();
 
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+initialLoader(app);
 
 app.use("/api", api);
 
