@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { verifyParams, verifyEmail } = require("../middlewares/validator");
+const validator = require("../middlewares/validator");
 const goalsController = require("./controllers/goals.controller");
 const auth = require("../middlewares/auth");
 
@@ -10,32 +10,32 @@ router.post("/mainGoal", auth.authenticateUser, goalsController.create);
 router.get(
   "/mainGoal/:id",
   auth.authenticateUser,
-  verifyParams,
+  validator.verifyParams,
   goalsController.getOne,
 );
 router.delete(
   "/mainGoal/:id",
   auth.authenticateUser,
-  verifyParams,
+  validator.verifyParams,
   goalsController.delete,
 );
 router.put(
   "/mainGoal/:id",
   auth.authenticateUser,
-  verifyParams,
+  validator.verifyParams,
   goalsController.modifyMainGoal,
 );
 router.post(
   "/mainGoal/:id/users",
   auth.authenticateUser,
-  verifyParams,
-  verifyEmail,
+  validator.verifyParams,
+  validator.verifyEmail,
   goalsController.share,
 );
 router.put(
   "/subGoal/:id",
   auth.authenticateUser,
-  verifyParams,
+  validator.verifyParams,
   goalsController.modifySubGoal,
 );
 
