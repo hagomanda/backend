@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const validator = require("../middlewares/validator");
-const goalsController = require("./controllers/goals.controller");
 const auth = require("../middlewares/auth");
+const goalsController = require("./controllers/goals.controller");
 
 router.get("/", (req, res, next) => {});
 router.post("/mainGoal", auth.authenticateUser, goalsController.create);

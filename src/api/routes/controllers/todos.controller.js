@@ -8,6 +8,7 @@ exports.addTodo = async (req, res, next) => {
 
     if (repetition.isRepeat) {
       const { type, duration } = repetition;
+
       addResult = await todosService.repeatTodo(
         id,
         new Date(date),
@@ -57,12 +58,43 @@ exports.saveTodoMemo = async (req, res, next) => {
   }
 };
 
-exports.deleteTodo = async (req, res, next) => {
+exports.deleteCalendarTodo = async (req, res, next) => {
   try {
-    const todoId = req.params.id;
-    const date = req.body.date;
+    const { id } = req.params;
+    const { date } = req.body;
 
-    await todosService.deleteTodo(todoId, new Date(date));
+    await todosService.deleteCalendarTodo(id, new Date(date));
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.modifyTodoCheckButton = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { isComplete, date } = req.body;
+
+    const result = await todosService.modifyTodoCheckButton(
+      id,
+      isComplete,
+      date,
+    );
+
+    if (!result.isSuccess) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "존재하지 않는 Todo 입니다",
+      });
+    }
+
+    res.json({
+      result: "ok",
+    });
   } catch (error) {
     next(error);
   }
