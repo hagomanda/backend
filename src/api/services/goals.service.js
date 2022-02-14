@@ -7,7 +7,7 @@ const Todo = require("../../models/Todo");
 exports.getDetail = async id => {
   const result = await MainGoal.findById(id)
     .lean()
-    .populate("subGoals.todos", "title");
+    .populate("subGoals.todos", "title level");
   return result;
 };
 
@@ -40,7 +40,7 @@ exports.create = async user => {
       createdTodos: { $each: todosArray },
     },
     $concatArrays: {},
-  }).exec();
+  }).lean();
 
   return mainGoalId;
 };
@@ -51,10 +51,10 @@ exports.getSharedUsers = async goalId => {
 };
 
 exports.delete = async (goalId, userId) => {
-  await MainGoal.findByIdAndDelete(goalId).exec();
+  await MainGoal.findByIdAndDelete(goalId).lean();
   await User.findByIdAndUpdate(userId, {
     $pull: { createdGoals: goalId },
-  }).exec();
+  }).lean();
 };
 
 exports.deleteShared = async (goalId, userId) => {
@@ -90,17 +90,19 @@ exports.deleteAll = async (goalId, users) => {
 exports.modifyMainGoal = async (mainGoalId, title) => {
   return await MainGoal.findByIdAndUpdate(mainGoalId, {
     $set: { title },
-  }).exec();
+  })
+    .lean()
+    .populate("subGoals.todos", "title level");
 };
 
-exports.modifySubGoal = async (subGoal, subGoalId, mainGoalId) => {
-  const { title, todos } = subGoal;
-  const mainGoal = await MainGoal.findById(mainGoalId).lean();
-
+exports.modifySubGoal = async (title, mainGoalId, subGoalId) => {
+  const mainGoal = await MainGoal.findById(mainGoalId).populate(
+    "subGoals.todos",
+    "title level",
+  );
   mainGoal.subGoals.forEach(subGoal => {
-    if (subGoalId === String(subGoal._id)) {
+    if (subGoalId === subGoal._id.toString()) {
       subGoal.title = title;
-      subGoal.todos = todos;
     }
   });
 

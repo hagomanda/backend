@@ -1,5 +1,5 @@
 const { add, format } = require("date-fns");
-
+const { getDetail } = require("./goals.service");
 const Todo = require("../../models/Todo");
 
 exports.addDateToTodo = async (id, dateObject) => {
@@ -49,16 +49,24 @@ exports.repeatTodo = async (id, date, type, duration) => {
 };
 
 exports.saveTodoMemo = async (id, date, memo) => {
-  const todo = await Todo.findById(id);
+  const todo = await Todo.findById(id).exec();
 
   todo.addedInCalendar.set(date, { memo });
   return await todo.save();
 };
 
 exports.deleteTodo = async (todoId, dateObject) => {
-  const todo = await Todo.findById(todoId);
+  const todo = await Todo.findById(todoId).exec();
 
   const date = format(dateObject, "yyyy-MM-dd");
   todo.addedInCalendar.delete(date);
   await todo.save();
+};
+
+exports.modifyTodo = async (todoId, title, mainGoalId) => {
+  await Todo.findByIdAndUpdate(todoId, {
+    $set: { title },
+  }).exec();
+
+  return await getDetail(mainGoalId);
 };
