@@ -13,6 +13,13 @@ router.post(
   todosController.addTodo,
 );
 
+router.put(
+  "/:id",
+  auth.authenticateUser,
+  validator.verifyParams,
+  todosController.modifyTodo,
+);
+
 router.post(
   "/memo/:id",
   auth.authenticateUser,

@@ -99,3 +99,39 @@ exports.modifyTodoCheckButton = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.modifyTodo = async (req, res, next) => {
+  try {
+    const todoId = req.params.id;
+    const { mainGoalId, title: modifiedTitle } = req.body;
+    const result = await todosService.modifyTodo(
+      todoId,
+      modifiedTitle,
+      mainGoalId,
+    );
+
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "Not Found",
+      });
+    }
+
+    const { _id, title, subGoals, level, users, messages } = result;
+
+    res.json({
+      result: "ok",
+      data: {
+        _id,
+        title,
+        subGoals,
+        level,
+        users,
+        messages,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
