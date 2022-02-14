@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 
 exports.verifyParams = (req, res, next) => {
   const { id } = req.params;
@@ -64,4 +65,32 @@ exports.verifyEmail = async (req, res, next) => {
     error.status = 400;
     next(error);
   }
+};
+
+exports.verifyChatToken = (req, res, next) => {
+  const token = req.query?.nextPageToken;
+
+  if (!token || !token.length) {
+    res.locals.startIndex = undefined;
+    return next();
+  }
+
+  const decodedToken = jwt.verify(
+    token,
+    process.env.CHAT_QUERY_SECRET_KEY,
+    (error, decode) => {
+      if (error) {
+        return error;
+      }
+
+      return decode.payload;
+    },
+  );
+
+  if (decodedToken.message) {
+    return next(new Error("Invalid Token"));
+  }
+
+  res.locals.lastIndex = decodedToken.lastIndex;
+  return;
 };
