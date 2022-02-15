@@ -22,6 +22,15 @@ function startSocket(app) {
     socket.on("leaveMandal", () => {
       socket.leave(currentRoom);
     });
+
+    socket.on("joinChat", id => {
+      currentRoom = "room" + id;
+      socket.join(currentRoom);
+    });
+
+    socket.on("leaveChat", () => {
+      socket.leave(currentRoom);
+    });
   });
 }
 

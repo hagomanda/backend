@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const { string } = require("joi");
 
 exports.verifyParams = (req, res, next) => {
   const { id } = req.params;
@@ -93,4 +94,17 @@ exports.verifyChatToken = (req, res, next) => {
 
   res.locals.lastIndex = decodedToken.lastIndex;
   return;
+};
+
+exports.verifyMessage = (req, res, next) => {
+  const { body } = req;
+  const schema = Joi.string().min(1).max(1000).required();
+
+  try {
+    schema.validate(body);
+    next();
+  } catch (error) {
+    error.status = 400;
+    next(error);
+  }
 };

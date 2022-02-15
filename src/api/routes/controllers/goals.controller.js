@@ -6,7 +6,6 @@ const {
 const goalsService = require("../../services/goals.service");
 
 exports.getOne = async (req, res, next) => {
-  req.app.io.emit("foo", "foo보낸다!");
   try {
     const { id } = req.params;
     const result = await goalsService.getDetail(id);
