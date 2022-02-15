@@ -51,13 +51,14 @@ exports.getTodosFromId = async (id, date, days) => {
       continue;
     }
     const revisedTodosInDate = todosInDate.map(todo => {
-      const { _id, title, addedInCalendar } = todo;
+      const { _id, title, addedInCalendar, level } = todo;
       const { isComplete, memo } = addedInCalendar.get(currentDate);
       return {
         _id,
         title,
         isComplete,
         memo,
+        level,
       };
     });
 

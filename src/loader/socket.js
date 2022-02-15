@@ -6,7 +6,7 @@ function startSocket(app) {
 
     let currentRoom = null;
 
-    socket.on("edit", (content, id) => {
+    socket.on("edit", content => {
       socket.broadcast.to(currentRoom).emit("modifySuccess", content);
     });
 

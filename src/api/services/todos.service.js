@@ -58,7 +58,7 @@ exports.saveTodoMemo = async (id, date, memo) => {
 exports.deleteCalendarTodo = async (todoId, dateObject) => {
   const todo = await Todo.findById(todoId);
   const date = format(dateObject, "yyyy-MM-dd");
-  
+
   todo.addedInCalendar.delete(date);
   await todo.save();
 };
@@ -73,8 +73,19 @@ exports.modifyTodoCheckButton = async (id, isComplete, date) => {
   }
 
   todo.addedInCalendar.get(date).isComplete = isComplete;
+
+  if (isComplete) {
+    todo.experiencePoint++;
+    todo.experiencePoint >= todo.level ** 1.2 && todo.level++;
+  } else {
+    todo.experiencePoint--;
+    todo.experiencePoint < (todo.level - 1) ** 1.2 && todo.level--;
+    todo.experiencePoint === 0 && todo.level--;
+  }
+
   await todo.save();
   return { isSuccess: true };
+};
 
 exports.modifyTodo = async (todoId, title, mainGoalId) => {
   await Todo.findByIdAndUpdate(todoId, {
