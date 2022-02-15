@@ -69,7 +69,7 @@ exports.getTodosFromId = async (id, date, days) => {
 };
 
 exports.findUserByEmail = async userEmail => {
-  const user = await User.findOne({ userEmail }).lean();
+  const user = await User.findOne({ email: userEmail }).lean();
 
   if (!user) {
     return false;
