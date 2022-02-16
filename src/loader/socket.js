@@ -13,6 +13,15 @@ function startSocket(app) {
     socket.on("disconnect", () => {
       console.log("user disconnected");
     });
+    
+    socket.on("joinMandal", id => {
+      currentRoom = "room" + id;
+      socket.join(currentRoom);
+    });
+
+    socket.on("leaveMandal", () => {
+      socket.leave(currentRoom);
+    });
   });
 }
 
