@@ -14,7 +14,7 @@ initialLoader(app);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.URL,
     credentials: true,
     methods: "GET,POST,DELETE,PUT",
   }),
