@@ -11,14 +11,14 @@ exports.getDetail = async id => {
   return result;
 };
 
-exports.create = async user => {
+exports.create = async (user, title) => {
   const mainGoalId = mongoose.Types.ObjectId();
   const { _id } = user;
-
   const mainGoal = await MainGoal.create({
     _id: mainGoalId,
     createdBy: _id,
     users: [_id],
+    title,
   });
 
   const todosArray = [];
@@ -112,7 +112,6 @@ exports.modifySubGoal = async (title, mainGoalId, subGoalId) => {
 exports.share = async (goalId, email) => {
   const user = await User.findOne({ email });
   const mainGoal = await MainGoal.findById(goalId);
-  const isShareUser = mainGoal.users.includes(user._id);
 
   if (!user) {
     return {
@@ -128,17 +127,17 @@ exports.share = async (goalId, email) => {
     };
   }
 
-  if (isShareUser) {
-    return {
-      isSuccess: false,
-      type: "DUPLICATE_USER",
-    };
-  }
+  await MainGoal.findByIdAndUpdate(goalId, {
+    $addToSet: {
+      users: user._id,
+    },
+  });
 
-  user.createdGoals.push(mainGoal._id);
-  mainGoal.users.push(user._id);
-  await user.save();
-  await mainGoal.save();
+  await User.findByIdAndUpdate(user._id, {
+    $addToSet: {
+      createdGoals: mainGoal._id,
+    },
+  });
 
   return { isSuccess: true };
 };

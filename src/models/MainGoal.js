@@ -44,7 +44,7 @@ const MainGoalSchema = new mongoose.Schema({
   },
   subGoals: {
     type: [SubGoalSchema],
-    default: Array.from(Array(8), element => new Object()),
+    default: Array.from(Array(8), () => new Object()),
   },
   users: {
     type: [Schema.Types.ObjectId],

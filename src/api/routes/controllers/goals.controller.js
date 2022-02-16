@@ -39,7 +39,8 @@ exports.getOne = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const result = await goalsService.create(res.locals.user);
+    const { title } = req.body;
+    const result = await goalsService.create(res.locals.user, title);
     const mainGoalId = result;
 
     if (!result) {
