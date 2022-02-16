@@ -8,8 +8,17 @@ const api = require("./api");
 const indexRouter = require("./index");
 
 const app = express();
+const cors = require("cors");
 
 initialLoader(app);
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+    methods: "GET,POST,DELETE,PUT",
+  }),
+);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
