@@ -47,7 +47,7 @@ exports.findUserByEmail = async (req, res, next) => {
     const user = await usersService.findUserByEmail(req.headers.otheruser);
 
     if (!user) {
-      res.status(400);
+      res.status(200);
       return res.json({
         result: "false",
         message: "해당하는 유저가 없습니다.",
