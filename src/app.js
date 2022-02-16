@@ -1,15 +1,19 @@
 require("dotenv").config();
-
+const path = require("path");
 const createError = require("http-errors");
 const express = require("express");
 
 const initialLoader = require("./loader");
 const api = require("./api");
+const indexRouter = require("./index");
 
 const app = express();
 
 initialLoader(app);
 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
+app.use("/", indexRouter);
 app.use("/api", api);
 
 app.use((req, res, next) => {
