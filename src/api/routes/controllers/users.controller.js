@@ -18,7 +18,7 @@ exports.getGoals = async (req, res, next) => {
     const user = res.locals.user;
     const { _id } = user;
     const { createdGoals } = await User.findById(_id, "createdGoals -_id");
-    const result = await usersService.getGoalsFromIds(createdGoals);
+    const result = await usersService.getGoalsFromGoalIds(createdGoals);
 
     res.json({ result });
   } catch (error) {
@@ -32,7 +32,7 @@ exports.getTodos = async (req, res, next) => {
     const days = req.headers.days;
     const user = res.locals.user;
     const { _id } = user;
-    const todos = await usersService.getTodosFromId(_id, requestDate, days);
+    const todos = await usersService.getTodosFromUserId(_id, requestDate, days);
 
     res.json({
       result: todos,
