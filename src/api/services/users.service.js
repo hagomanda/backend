@@ -16,7 +16,7 @@ exports.signup = async userData => {
   });
 };
 
-exports.getGoalsFromIds = async ids => {
+exports.getGoalsFromGoalIds = async ids => {
   try {
     const results = await MainGoal.find(
       {
@@ -34,7 +34,7 @@ exports.getGoalsFromIds = async ids => {
   }
 };
 
-exports.getTodosFromId = async (id, date, days) => {
+exports.getTodosFromUserId = async (id, date, days) => {
   const todos = {};
   const { createdTodos } = await User.findById(
     id,
