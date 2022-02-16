@@ -30,6 +30,14 @@ const MessagesSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  profile: {
+    type: String,
+    required: true,
+  },
+  displayName: {
+    type: String,
+    required: true,
+  },
 });
 
 const MainGoalSchema = new mongoose.Schema({

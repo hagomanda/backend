@@ -13,4 +13,12 @@ router.get(
   chatsController.getChat,
 );
 
+router.post(
+  "/:id",
+  auth.authenticateUser,
+  validator.verifyParams,
+  validator.verifyMessage,
+  chatsController.sendMessage,
+);
+
 module.exports = router;

@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const MainGoal = require("../../../models/MainGoal");
 const chatsService = require("../../services/chats.service");
 
 exports.getChat = async (req, res, next) => {
@@ -50,5 +51,43 @@ exports.getChat = async (req, res, next) => {
       result: "error",
       message: "messages not found",
     });
+  }
+};
+
+exports.sendMessage = async (req, res, next) => {
+  const { id } = req.params;
+  const userId = res.locals.user._id;
+  const { profile } = res.locals.user;
+  const { displayName } = res.locals.user;
+  const { message } = req.body;
+  const { createdAt } = req.body;
+
+  try {
+    const result = await chatsService.sendMessage(
+      id,
+      userId,
+      message,
+      createdAt,
+      profile,
+      displayName,
+    );
+
+    if (!result) {
+      res.status(404);
+      return res.json({
+        result: "error",
+        message: "Not Found",
+      });
+    }
+
+    req.app.io
+      .to("room" + id)
+      .emit("message", message, createdAt, displayName, profile);
+
+    res.json({
+      result: "ok",
+    });
+  } catch (error) {
+    next(error);
   }
 };
