@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "dev": "NODE_ENV=development nodemon ./bin/www",
     "lint-staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "mocha --exit"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -37,6 +38,9 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "husky": "^7.0.0"
+    "chai": "^4.3.6",
+    "husky": "^7.0.0",
+    "mocha": "^9.2.0",
+    "supertest": "^6.2.2"
   }
 }

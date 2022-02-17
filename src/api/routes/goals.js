@@ -5,7 +5,6 @@ const validator = require("../middlewares/validator");
 const auth = require("../middlewares/auth");
 const goalsController = require("./controllers/goals.controller");
 
-router.get("/", (req, res, next) => {});
 router.post("/mainGoal", auth.authenticateUser, goalsController.create);
 router.get(
   "/mainGoal/:id",
