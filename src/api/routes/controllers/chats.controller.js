@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const MainGoal = require("../../../models/MainGoal");
 const chatsService = require("../../services/chats.service");
 
 exports.getChat = async (req, res, next) => {
