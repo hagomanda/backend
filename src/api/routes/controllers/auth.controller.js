@@ -6,7 +6,6 @@ exports.logout = async (req, res, next) => {
     await authService.logout(res.locals.user);
 
     delete req.headers.authorization;
-    res.clearCookie("refreshToken");
 
     res.json({
       result: "ok",
@@ -31,13 +30,13 @@ exports.login = async (req, res, next) => {
     const { newAccessToken, newRefreshToken } = utils.createToken(email);
 
     await authService.saveToken(email, newRefreshToken);
-    res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
     res.json({
       email,
       displayName,
       profile,
       newAccessToken,
+      newRefreshToken,
       isSuccess: true,
     });
   } catch (error) {
@@ -47,7 +46,7 @@ exports.login = async (req, res, next) => {
 
 exports.refreshLogin = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
       return res.json({
@@ -78,7 +77,6 @@ exports.refreshLogin = async (req, res, next) => {
 
     const { newAccessToken, newRefreshToken } = utils.createToken(user.email);
     await authService.saveToken(user.email, newRefreshToken);
-    res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
     const { email, displayName, profile } = user;
 
@@ -87,6 +85,7 @@ exports.refreshLogin = async (req, res, next) => {
       displayName,
       profile,
       newAccessToken,
+      newRefreshToken,
       isSuccess: true,
     });
   } catch (error) {
