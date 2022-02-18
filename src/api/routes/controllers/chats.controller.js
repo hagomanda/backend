@@ -70,7 +70,7 @@ exports.sendMessage = async (req, res, next) => {
       profile,
       displayName,
     );
-
+    console.log("서버에서 result", result);
     if (!result) {
       res.status(404);
       return res.json({
@@ -78,6 +78,8 @@ exports.sendMessage = async (req, res, next) => {
         message: "Not Found",
       });
     }
+
+    console.log("에러 다음 메세지", message);
 
     req.app.io
       .to("room" + id)
