@@ -70,7 +70,7 @@ exports.sendMessage = async (req, res, next) => {
       profile,
       displayName,
     );
-    console.log("서버에서 result", result);
+
     if (!result) {
       res.status(404);
       return res.json({
