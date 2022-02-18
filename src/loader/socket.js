@@ -22,9 +22,18 @@ function startSocket(app) {
     socket.on("leaveMandal", () => {
       socket.leave(currentRoom);
     });
+
     socket.on("selectMandalBox", (user, boxId) => {
       console.log(user, boxId);
       socket.broadcast.to(currentRoom).emit("selectMandalBox", user, boxId);
+    });
+
+    socket.on("message", (message, createdAt, user) => {
+      const { displayName, profile } = user;
+      console.log(message, createdAt, user);
+      app.io
+        .to(currentRoom)
+        .emit("message", message, createdAt, displayName, profile);
     });
   });
 }
