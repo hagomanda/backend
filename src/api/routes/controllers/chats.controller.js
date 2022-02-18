@@ -80,9 +80,11 @@ exports.sendMessage = async (req, res, next) => {
     }
 
     console.log("에러 다음 메세지", message);
+
     // req.app.io
     //   .to("room" + id)
     //   .emit("message", message, createdAt, displayName, profile);
+
 
     res.json({
       result: "ok",

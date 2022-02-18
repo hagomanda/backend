@@ -30,7 +30,9 @@ function startSocket(app) {
 
     socket.on("message", (message, createdAt, user) => {
       const { displayName, profile } = user;
+
       console.log(message);
+
       app.io
         .to(currentRoom)
         .emit("message", message, createdAt, displayName, profile);
