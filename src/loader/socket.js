@@ -28,7 +28,6 @@ function startSocket(app) {
       socket.broadcast.to(currentRoom).emit("selectMandalBox", user, boxId);
     });
 
-
     socket.on("message", (message, createdAt, user) => {
       const { displayName, profile } = user;
       console.log(message, createdAt, user);
@@ -36,6 +35,7 @@ function startSocket(app) {
         .to(currentRoom)
         .emit("message", message, createdAt, displayName, profile);
     });
+
   });
 }
 
