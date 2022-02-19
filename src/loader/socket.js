@@ -32,7 +32,7 @@ function startSocket(app) {
 
       app.io
         .to(currentRoom)
-        .emit("message", { message, createdAt, displayName, profile });
+        .emit("message", message, createdAt, displayName, profile);
     });
   });
 }
